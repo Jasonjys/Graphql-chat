@@ -6,7 +6,7 @@ export default gql`
   }
 
   extend type Subscription {
-    messageAdded(chatId: ID!): Message
+    messageAdded: Message
   }
 
   type Message {

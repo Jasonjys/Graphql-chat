@@ -9,7 +9,7 @@ export default {
       return User.findById(req.session.userId)
     },
     users: (parent, args, { req }, info) => {
-      // TODO: auth, projection, paginatio, sanitization
+      // TODO: projection, pagination, sanitization
 
       return User.find({})
     },

@@ -1,6 +1,6 @@
 import Joi from 'joi'
 import { UserInputError } from 'apollo-server-core'
-import { PubSub, withFilter } from 'apollo-server-express'
+import { PubSub } from 'apollo-server-express'
 import { Message, Chat, User } from '../models'
 import { objectId } from '../schemas'
 
@@ -31,12 +31,7 @@ export default {
 
   Subscription: {
     messageAdded: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator('messageAdded'),
-        (payload, variables) => {
-          return payload.chatId === variables.chatId
-        }
-      )
+      subscribe: () => pubsub.asyncIterator('messageAdded')
     }
   },
 
