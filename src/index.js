@@ -5,10 +5,12 @@ import connectRedis from 'connect-redis'
 import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import DataLoader from 'dataloader'
 
 import typeDefs from './typeDefs'
 import resolvers from './resolvers'
 import schemaDirectives from './directives'
+import loaders from './loaders'
 
 dotenv.config()
 
@@ -31,6 +33,7 @@ const {
 const IN_DEV = NODE_ENV === 'development'
 
 // connect to mongodb
+mongoose.set('debug', true)
 mongoose.connect(
   `mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
   { useNewUrlParser: true }
@@ -79,9 +82,19 @@ mongoose.connect(
     // pass req and res to context so I can access them from in resolvers
     context: ({ req, res, connection }) => {
       if (connection) {
-        return connection.context
+        return {
+          loaders: {
+            user: new DataLoader(keys => loaders.user.batchUsers(keys))
+          }
+        }
       } else {
-        return { req, res }
+        return {
+          req,
+          res,
+          loaders: {
+            user: new DataLoader(keys => loaders.user.batchUsers(keys))
+          }
+        }
       }
     }
   })

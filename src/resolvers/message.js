@@ -8,7 +8,7 @@ const pubsub = new PubSub()
 
 export default {
   Query: {
-    chatMessages: async (parent, { chatId, cursor, limit = 100 }, { req }, info) => {
+    messages: async (parent, { chatId, cursor, limit = 100 }, { req }, info) => {
       await Joi.validate({ id: chatId }, objectId)
 
       const baseOption = { chat: chatId }
@@ -56,8 +56,8 @@ export default {
   },
 
   Message: {
-    sender: (message, args, { req }, info) => {
-      return User.findById(message.sender)
+    sender: (message, args, { req, loaders }, info) => {
+      return loaders.user.load(message.sender)
     }
   }
 }
