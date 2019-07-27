@@ -1,4 +1,6 @@
-import { ApolloServer } from 'apollo-server-express'
+import {
+  ApolloServer
+} from 'apollo-server-express'
 import http from 'http'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
@@ -35,8 +37,9 @@ const IN_DEV = NODE_ENV === 'development'
 // connect to mongodb
 mongoose.set('debug', true)
 mongoose.connect(
-  `mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`,
-  { useNewUrlParser: true }
+  `mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`, {
+    useNewUrlParser: true
+  }
 ).then(() => {
   const app = express()
   app.disable('x-powered-by')
@@ -80,7 +83,11 @@ mongoose.connect(
       }
     } : false,
     // pass req and res to context so I can access them from in resolvers
-    context: ({ req, res, connection }) => {
+    context: ({
+      req,
+      res,
+      connection
+    }) => {
       if (connection) {
         return {
           loaders: {
@@ -107,7 +114,9 @@ mongoose.connect(
   const httpServer = http.createServer(app)
   server.installSubscriptionHandlers(httpServer)
 
-  httpServer.listen({ port: 4000 }, () =>
+  httpServer.listen({
+      port: 4000
+    }, () =>
     console.log(`🚀http://localhost:${APP_PORT}${server.graphqlPath}`)
   )
 }).catch(e => {
